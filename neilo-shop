@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEILO // TECH FOOTWEAR ARCHIVE — UAH / EUR</title>
+  
+  <!-- Google Fonts: Unbounded, Space Grotesk, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Unbounded', 'sans-serif'],
+            sans: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: '#08080A',
+            panel: '#111115',
+            panelLight: '#18181E',
+            volt: '#D4FF00',
+            silver: '#F4F4F6',
+            ash: '#8A8A93',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-obsidian: #08080A;
+      --bg-panel: #111115;
+      --accent-volt: #D4FF00;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      background-color: var(--bg-obsidian);
+      color: #F4F4F6;
+      overflow-x: hidden;
+    }
+
+    /* Текстура пленочного зерна (Noise Overlay) */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      pointer-events: none;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Архитектурная сетка на фоне */
+    .tech-grid-bg {
+      background-size: 48px 48px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    }
+
+    /* Кастомный курсор-прицел (только для десктопов с мышью) */
+    @media (hover: hover) and (pointer: fine) {
+      body, a, button, select, input {
+        cursor: none !important;
+      }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #D4FF00;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  background-color 0.22s ease,
+                  border-color 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      mix-blend-mode: normal;
+    }
+
+    #custom-cursor.cursor-active {
+      width: 68px;
+      height: 68px;
+      background-color: #D4FF00;
+      border-color: #D4FF00;
+      color: #08080A;
+    }
+
+    #custom-cursor-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      color: #08080A;
+    }
+
+    #custom-cursor.cursor-active #custom-cursor-label {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Анимация левитации кроссовка на подиуме */
+    @keyframes levitate {
+      0%, 100% { transform: translateY(0px) rotate(-14deg); }
+      50% { transform: translateY(-14px) rotate(-11deg); }
+    }
+
+    .sneaker-levitate {
+      animation: levitate 5.5s ease-in-out infinite;
+      filter: drop-shadow(0 28px 34px rgba(0, 0, 0, 0.85));
+    }
+
+    /* Пульсация хотспотов на 3D-подиуме */
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.85; }
+      70% { transform: scale(2.1); opacity: 0; }
+      100% { transform: scale(2.1); opacity: 0; }
+    }
+
+    .hotspot-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 9999px;
+      border: 1.5px solid #D4FF00;
+      animation: pulseRing 2.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+
+    /* Бегущая строка (Marquee) */
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 28s linear infinite;
+    }
+
+    .marquee-wrapper:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    /* Кинетическое появление текста (Stagger Reveal) */
+    @keyframes charSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(105%) skewY(4deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0%) skewY(0deg);
+      }
+    }
+
+    .reveal-char {
+      display: inline-block;
+      opacity: 0;
+      animation: charSlideUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Карточка товара: Spotlight эффект по координатам мыши */
+    .bento-card {
+      position: relative;
+      background: #111115;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    }
+
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: radial-gradient(
+        420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(212, 255, 0, 0.55),
+        transparent 45%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .bento-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Анимация появления карточек при фильтрации */
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .card-animate {
+      animation: cardAppear 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Глитч-сдвиг логотипа при наведении */
+    .logo-glitch:hover {
+      text-shadow: 2px 0 #D4FF00, -2px 0 #00F0FF;
+    }
+
+    /* Кастомный скроллбар */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08080A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272F;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4FF00;
+    }
+  </style>
+</head>
+<body class="tech-grid-bg selection:bg-volt selection:text-obsidian">
+
+  <!-- Текстура зерна -->
+  <div class="noise-overlay"></div>
+
+  <!-- Кастомный магнитный курсор -->
+  <div id="custom-cursor" class="hidden md:flex">
+    <span id="custom-cursor-label">VIEW</span>
+  </div>
+
+  <!-- Контейнер уведомлений -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[80] flex flex-col gap-2.5 pointer-events-none"></div>
+
+  <!-- 1. FLOATING GLASS HUD HEADER -->
+  <header class="fixed top-4 inset-x-0 z-40 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto bg-[#111115]/80 backdrop-blur-xl border border-white/10 rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
+      
+      <!-- Левая часть: Лого + Статус -->
+      <div class="flex items-center gap-4">
+        <a href="#" onclick="resetAllFilters()" data-cursor="HOME" class="logo-glitch font-display font-extrabold text-xl sm:text-2xl tracking-[0.2em] text-silver transition">
+          NEILO<span class="text-volt">.</span>
+        </a>
+        <div class="hidden xl:flex items-center gap-2 pl-4 border-l border-white/10 font-mono text-[11px] text-ash">
+          <span class="w-2 h-2 rounded-full bg-volt animate-pulse"></span>
+          <span>SYS: ONLINE // DROP 04</span>
+        </div>
+      </div>
+
+      <!-- Центр: Поиск в стиле терминала -->
+      <div class="hidden md:flex items-center flex-1 max-w-xs lg:max-w-sm mx-4">
+        <div class="relative w-full">
+          <i data-lucide="search" class="w-4 h-4 text-ash absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          <input 
+            type="text" 
+            id="search-input"
+            placeholder="ПОИСК СИЛУЭТА / БРЕНДА..."
+            class="w-full bg-obsidian/90 border border-white/10 focus:border-volt rounded-xl pl-10 pr-4 py-2 font-mono text-xs text-silver placeholder-ash/70 outline-none transition"
+          >
+        </div>
+      </div>
+
+      <!-- Правая часть: Переключатель валюты UAH/EUR с sliding pill + Корзина -->
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        
+        <!-- Анимированный переключатель валют -->
+        <div class="relative flex items-center bg-obsidian border border-white/10 rounded-xl p-1" data-cursor="RATE">
+          <div id="currency-pill" class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-volt rounded-lg transition-transform duration-300 ease-out"></div>
+          <button 
+            id="btn-uah"
+            onclick="setCurrency('UAH')"
+            class="relative z-10 px-3 py-1 font-mono text-xs font-bold text-obsidian transition-colors duration-200"
+          >
+            UAH ₴
+          </button>
+          <button 
+            id="btn-eur"
+            onclick="setCurrency('EUR')"
+            class="relative z-10 px-3 py-1 font-mono text-xs font-bold text-ash hover:text-silver transition-colors duration-200"
+          >
+            EUR €
+          </button>
+        </div>
+
+        <!-- Кнопка корзины-терминала -->
+        <button 
+          onclick="toggleCart(true)"
+          data-cursor="BAG"
+          class="group relative flex items-center gap-2.5 bg-panelLight hover:bg-volt border border-white/10 hover:border-volt text-silver hover:text-obsidian px-3.5 sm:px-4 py-2 rounded-xl transition-all duration-200"
+        >
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span class="hidden sm:inline font-mono text-xs font-bold tracking-wider">BAG</span>
+          <span id="cart-badge" class="font-mono text-xs font-bold bg-volt group-hover:bg-obsidian text-obsidian group-hover:text-volt px-1.5 py-0.5 rounded-md transition-colors">
+            0
+          </span>
+        </button>
+
+        <!-- Кнопка мобильного поиска -->
+        <button 
+          onclick="toggleMobileSearch()"
+          aria-label="Поиск"
+          class="md:hidden p-2 rounded-xl bg-panelLight border border-white/10 text-silver"
+        >
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Выпадающий мобильный поиск -->
+    <div id="mobile-search-bar" class="hidden md:hidden max-w-7xl mx-auto mt-2 bg-panel/95 backdrop-blur-xl border border-white/10 rounded-2xl p-3">
+      <input 
+        type="text" 
+        id="mobile-search-input"
+        placeholder="ПОИСК ПО КАТАЛОГУ NEILO..."
+        class="w-full bg-obsidian border border-white/10 focus:border-volt rounded-xl px-4 py-2.5 font-mono text-xs text-silver placeholder-ash outline-none"
+      >
+    </div>
+  </header>
+
+  <!-- 2. АСИММЕТРИЧНЫЙ HERO-БЛОК С 3D-ПОДИУМОМ -->
+  <section class="relative pt-32 sm:pt-36 pb-16 sm:pb-24 overflow-hidden">
+    <!-- Фоновый радиальный свет -->
+    <div class="absolute top-24 right-0 w-[520px] h-[520px] bg-volt/10 rounded-full blur-[150px] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-10 w-[360px] h-[360px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        <!-- Левая колонка: Кинетическая типографика и мета-теги -->
+        <div class="lg:col-span-6 space-y-7 z-10">
+          <!-- Мета-теги -->
+          <div class="flex flex-wrap items-center gap-2.5 font-mono text-[11px] tracking-widest uppercase">
+            <span class="px-3 py-1 rounded-md bg-volt text-obsidian font-bold">DROP 04 // FW26</span>
+            <span class="px-3 py-1 rounded-md bg-panel border border-white/10 text-ash">LOC: UA / EU</span>
+            <span class="px-3 py-1 rounded-md bg-panel border border-white/10 text-silver">1 EUR = 45 UAH</span>
+          </div>
+
+          <!-- Гигантский заголовок с посимвольным появлением -->
+          <h1 id="hero-title" class="font-display font-extrabold text-4xl sm:text-6xl xl:text-[66px] leading-[0.98] tracking-tight text-silver uppercase">
+            <!-- Заполняется через JS для staggered animation -->
+          </h1>
+
+          <p class="text-ash text-base sm:text-lg max-w-lg leading-relaxed">
+            Кураторский архив технологичной мужской обуви. Карбоновые пластины, мембраны Gore-Tex и архитектурные силуэты с доставкой по Украине и Европе.
+          </p>
+
+          <!-- Кнопки действия -->
+          <div class="flex flex-wrap items-center gap-4 pt-1">
+            <a 
+              href="#catalog" 
+              data-cursor="GO"
+              class="inline-flex items-center gap-3 px-7 py-4 rounded-xl bg-volt text-obsidian font-mono text-xs font-bold uppercase tracking-widest hover:brightness-110 transition shadow-[0_0_30px_rgba(212,255,0,0.25)]"
+            >
+              <span>ОТКРЫТЬ АРХИВ</span>
+              <i data-lucide="arrow-down-right" class="w-4 h-4"></i>
+            </a>
+
+            <button 
+              onclick="openProductModal(1)" 
+              data-cursor="SPEC"
+              class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-panel hover:bg-panelLight border border-white/10 text-silver font-mono text-xs font-semibold uppercase tracking-widest transition"
+            >
+              <span>РЕЛИЗ НЕДЕЛИ</span>
+              <span class="text-volt font-bold" data-price-uah="9450">9 450 ₴</span>
+            </button>
+          </div>
+
+          <!-- Технические показатели -->
+          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 max-w-md font-mono">
+            <div>
+              <p class="text-xl sm:text-2xl font-bold text-silver">16</p>
+              <p class="text-[11px] text-ash uppercase mt-0.5">Культовых пар</p>
+            </div>
+            <div>
+              <p class="text-xl sm:text-2xl font-bold text-volt">12</p>
+              <p class="text-[11px] text-ash uppercase mt-0.5">Брендов архива</p>
+            </div>
+            <div>
+              <p class="text-xl sm:text-2xl font-bold text-silver">24H</p>
+              <p class="text-[11px] text-ash uppercase mt-0.5">Диспатч UA/EU</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правая колонка: Интерактивный 3D-подиум с флагманским силуэтом -->
+        <div class="lg:col-span-6">
+          <div 
+            id="hero-podium"
+            data-cursor="INSPECT"
+            class="relative bg-panel/90 border border-white/10 rounded-3xl p-6 sm:p-10 overflow-hidden select-none transition-transform duration-200 ease-out"
+          >
+            <!-- Угловые тех-метки подиума -->
+            <div class="flex items-center justify-between font-mono text-[11px] text-ash mb-4">
+              <span id="podium-sku" class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-volt"></span>
+                MODEL_ID: #NL-001 // RICK OWENS
+              </span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="switchPodiumItem(1)" class="podium-tab px-2 py-0.5 rounded bg-volt text-obsidian font-bold text-[10px]">01</button>
+                <button onclick="switchPodiumItem(3)" class="podium-tab px-2 py-0.5 rounded bg-obsidian border border-white/10 text-ash hover:text-silver text-[10px]">02</button>
+                <button onclick="switchPodiumItem(7)" class="podium-tab px-2 py-0.5 rounded bg-obsidian border border-white/10 text-ash hover:text-silver text-[10px]">03</button>
+              </div>
+            </div>
+
+            <!-- Радиальный светящийся ореол сзади силуэта -->
+            <div class="relative aspect-[4/3] flex items-center justify-center my-2">
+              <div class="absolute w-64 h-64 sm:w-80 sm:h-80 rounded-full bg-volt/15 blur-3xl pointer-events-none"></div>
+              <div class="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full border border-dashed border-white/15 animate-[spin_28s_linear_infinite] pointer-events-none"></div>
+              
+              <!-- Контейнер детальной SVG-иллюстрации на подиуме -->
+              <div id="podium-svg-stage" class="sneaker-levitate relative z-10 w-[92%] max-w-[460px] flex items-center justify-center">
+                <!-- Рендерится через JS -->
+              </div>
+
+              <!-- Хотспот 1 -->
+              <div class="absolute top-[20%] left-[16%] z-20">
+                <button 
+                  type="button"
+                  onclick="toggleHotspot(0)"
+                  onmouseenter="showHotspot(0)"
+                  aria-label="Спецификация узла 01"
+                  class="hotspot-ring relative w-7 h-7 rounded-full bg-volt text-obsidian font-mono text-xs font-bold flex items-center justify-center shadow-lg"
+                >
+                  +
+                </button>
+                <div id="hotspot-card-0" class="hidden absolute left-9 top-0 w-52 bg-obsidian/95 backdrop-blur-md border border-volt/50 rounded-xl p-3 shadow-2xl z-30">
+                  <p id="hs-title-0" class="font-mono text-[10px] text-volt uppercase font-bold">01 // HEAVY CANVAS</p>
+                  <p id="hs-desc-0" class="text-xs text-silver mt-1 leading-snug">Плотный вощеный органический хлопок 16oz с контрастной строчкой.</p>
+                </div>
+              </div>
+
+              <!-- Хотспот 2 -->
+              <div class="absolute top-[34%] right-[12%] z-20">
+                <button 
+                  type="button"
+                  onclick="toggleHotspot(1)"
+                  onmouseenter="showHotspot(1)"
+                  aria-label="Спецификация узла 02"
+                  class="hotspot-ring relative w-7 h-7 rounded-full bg-volt text-obsidian font-mono text-xs font-bold flex items-center justify-center shadow-lg"
+                >
+                  +
+                </button>
+                <div id="hotspot-card-1" class="hidden absolute right-9 top-0 w-52 bg-obsidian/95 backdrop-blur-md border border-volt/50 rounded-xl p-3 shadow-2xl z-30">
+                  <p id="hs-title-1" class="font-mono text-[10px] text-volt uppercase font-bold">02 // EXTENDED TONGUE</p>
+                  <p id="hs-desc-1" class="text-xs text-silver mt-1 leading-snug">Удлиненный архитектурный язычок и массивные люверсы из палладия.</p>
+                </div>
+              </div>
+
+              <!-- Хотспот 3 -->
+              <div class="absolute bottom-[14%] left-[36%] z-20">
+                <button 
+                  type="button"
+                  onclick="toggleHotspot(2)"
+                  onmouseenter="showHotspot(2)"
+                  aria-label="Спецификация узла 03"
+                  class="hotspot-ring relative w-7 h-7 rounded-full bg-volt text-obsidian font-mono text-xs font-bold flex items-center justify-center shadow-lg"
+                >
+                  +
+                </button>
+                <div id="hotspot-card-2" class="hidden absolute left-0 bottom-9 w-52 bg-obsidian/95 backdrop-blur-md border border-volt/50 rounded-xl p-3 shadow-2xl z-30">
+                  <p id="hs-title-2" class="font-mono text-[10px] text-volt uppercase font-bold">03 // SHARK TOOTH SOLE</p>
+                  <p id="hs-desc-2" class="text-xs text-silver mt-1 leading-snug">Фирменная зубчатая подошва из вулканизированного каучука цвета Milk.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Нижняя панель подиума -->
+            <div class="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p id="podium-badge" class="font-mono text-[11px] text-volt uppercase">AVANT-GARDE ICON</p>
+                <h2 id="podium-name" class="font-display font-bold text-lg sm:text-xl text-silver">DRKSHDW RAMONES LOW</h2>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="text-right font-mono">
+                  <p class="text-[10px] text-ash uppercase">ЦЕНА АРХИВА</p>
+                  <p id="podium-price" class="text-lg font-bold text-volt" data-price-uah="23400">23 400 ₴</p>
+                </div>
+                <button 
+                  id="podium-cta"
+                  onclick="openProductModal(1)"
+                  class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-volt hover:text-obsidian font-mono text-xs font-bold uppercase transition"
+                >
+                  ВЗЯТЬ ПАРУ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. КИНЕТИЧЕСКАЯ БЕГУЩАЯ СТРОКА (INFINITE MARQUEE С НАКЛОНОМ -1.5deg) -->
+  <div class="relative my-6 -mx-2 overflow-hidden">
+    <div class="marquee-wrapper bg-volt text-obsidian py-3.5 border-y border-obsidian shadow-2xl transform -rotate-[1.5deg] scale-[1.02]">
+      <div class="marquee-track font-mono text-xs sm:text-sm font-bold uppercase tracking-[0.18em] flex items-center gap-8">
+        <span>RICK OWENS DRKSHDW</span><span>//</span>
+        <span>NEW ROCK REACTOR</span><span>//</span>
+        <span>BALENCIAGA 3XL</span><span>//</span>
+        <span>VANS KNU SKOOL</span><span>//</span>
+        <span>CONVERSE CHUCK 70</span><span>//</span>
+        <span>MAISON MARGIELA GAT</span><span>//</span>
+        <span>SALOMON XT-6 GTX</span><span>//</span>
+        <span>OAKLEY FACTORY TEAM</span><span>//</span>
+        <span id="marquee-rate">EXCHANGE RATE: 1 EUR = 45 UAH</span><span>//</span>
+        <!-- Дубликат для бесшовного цикла -->
+        <span>RICK OWENS DRKSHDW</span><span>//</span>
+        <span>NEW ROCK REACTOR</span><span>//</span>
+        <span>BALENCIAGA 3XL</span><span>//</span>
+        <span>VANS KNU SKOOL</span><span>//</span>
+        <span>CONVERSE CHUCK 70</span><span>//</span>
+        <span>MAISON MARGIELA GAT</span><span>//</span>
+        <span>SALOMON XT-6 GTX</span><span>//</span>
+        <span>OAKLEY FACTORY TEAM</span><span>//</span>
+        <span id="marquee-rate-dup">EXCHANGE RATE: 1 EUR = 45 UAH</span><span>//</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. НЕТИПИЧНАЯ BENTO / EDITORIAL СЕТКА КАТАЛОГА -->
+  <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+    
+    <!-- Заголовок секции и Уровень 1: Фильтрация по стилю/вайбу -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-white/10">
+      <div>
+        <div class="flex items-center gap-2 font-mono text-xs text-volt uppercase tracking-widest">
+          <span>[ 01 // MULTI-BRAND ARCHIVE ]</span>
+        </div>
+        <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-silver uppercase mt-2 tracking-tight">
+          КАТАЛОГ СИЛУЭТОВ
+        </h2>
+      </div>
+
+      <!-- Уровень 1: Стилевые категории с плавающей подложкой + Сортировка -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div id="filter-bar" class="relative flex flex-wrap items-center bg-panel border border-white/10 rounded-xl p-1">
+          <div id="filter-pill" class="hidden sm:block absolute top-1 bottom-1 left-1 bg-volt rounded-lg transition-all duration-300 ease-out"></div>
+          <button onclick="setCategory('all', this)" class="filter-btn relative z-10 px-3.5 py-2 font-mono text-xs font-bold uppercase text-obsidian transition-colors" data-cat="all">ВСЕ [16]</button>
+          <button onclick="setCategory('avantgarde', this)" class="filter-btn relative z-10 px-3.5 py-2 font-mono text-xs font-bold uppercase text-ash hover:text-silver transition-colors" data-cat="avantgarde">AVANT-GARDE & HEAVY</button>
+          <button onclick="setCategory('skate', this)" class="filter-btn relative z-10 px-3.5 py-2 font-mono text-xs font-bold uppercase text-ash hover:text-silver transition-colors" data-cat="skate">SKATE & STREET</button>
+          <button onclick="setCategory('gorpcore', this)" class="filter-btn relative z-10 px-3.5 py-2 font-mono text-xs font-bold uppercase text-ash hover:text-silver transition-colors" data-cat="gorpcore">GORPCORE & TECH</button>
+        </div>
+
+        <!-- Сортировка -->
+        <select 
+          id="sort-select" 
+          onchange="renderCatalog()"
+          aria-label="Сортировка"
+          class="bg-panel border border-white/10 focus:border-volt text-silver font-mono text-xs uppercase rounded-xl px-4 py-3 outline-none"
+        >
+          <option value="featured">СОРТИРОВКА: ПО УМОЛЧАНИЮ</option>
+          <option value="price-asc">ЦЕНА: ПО ВОЗРАСТАНИЮ</option>
+          <option value="price-desc">ЦЕНА: ПО УБЫВАНИЮ</option>
+          <option value="sole-desc">ПЛАТФОРМА: МАКС. ВЫСОТА</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Уровень 2: Быстрый фильтр-бар по брендам (чипсы с количеством моделей) -->
+    <div class="py-5 border-b border-white/10">
+      <div class="flex items-center justify-between font-mono text-[10px] text-ash uppercase tracking-wider mb-3">
+        <span>ФИЛЬТР ПО БРЕНДУ:</span>
+        <button onclick="setBrand('ALL')" class="text-volt hover:underline">СБРОСИТЬ БРЕНД</button>
+      </div>
+      <div id="brand-chips-bar" class="flex flex-wrap gap-2">
+        <!-- Рендерится автоматически через JS -->
+      </div>
+    </div>
+
+    <!-- Статус-бар каталога -->
+    <div class="flex flex-wrap items-center justify-between gap-4 py-4 font-mono text-xs text-ash">
+      <span id="catalog-counter">НАЙДЕНО МОДЕЛЕЙ: 16</span>
+      <span>ПЕРЕКЛЮЧАЙТЕ РАСЦВЕТКИ И ВЫБИРАЙТЕ РАЗМЕР EU ПРЯМО В КАРТОЧКЕ</span>
+    </div>
+
+    <!-- Асимметричная Bento-сетка товаров -->
+    <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mt-2">
+      <!-- Рендерится через JavaScript -->
+    </div>
+
+    <!-- Пустое состояние поиска -->
+    <div id="empty-state" class="hidden py-24 text-center border border-dashed border-white/10 rounded-3xl mt-6 space-y-4">
+      <p class="font-display text-2xl font-bold text-silver uppercase">СИЛУЭТЫ НЕ ОБНАРУЖЕНЫ</p>
+      <p class="font-mono text-xs text-ash">Попробуйте выбрать другой бренд, стиль или очистить поиск.</p>
+      <button onclick="resetAllFilters()" class="px-6 py-3 rounded-xl bg-volt text-obsidian font-mono text-xs font-bold uppercase">
+        СБРОСИТЬ ВСЕ ФИЛЬТРЫ
+      </button>
+    </div>
+  </main>
+
+  <!-- ФУТЕР В СТИЛЕ ТЕХ-СПЕЦИФИКАЦИИ -->
+  <footer class="border-t border-white/10 bg-panel/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+        <div class="md:col-span-5 space-y-4">
+          <div class="font-display font-extrabold text-2xl tracking-[0.2em] text-silver">
+            NEILO<span class="text-volt">.</span>
+          </div>
+          <p class="text-sm text-ash max-w-sm leading-relaxed">
+            Кураторский мультибрендовый архив мужской обуви: от авангарда Rick Owens и тяжелых платформ New Rock до скейт-классики Vans, Converse и горпкора Salomon.
+          </p>
+          <div class="font-mono text-xs text-volt">
+            PROMO CODE: <span class="px-2 py-1 bg-volt/10 border border-volt/30 rounded">NEILO10</span> (-10% НА ЗАКАЗ)
+          </div>
+        </div>
+
+        <div class="md:col-span-3 space-y-3 font-mono text-xs">
+          <p class="text-silver font-bold uppercase">НАПРАВЛЕНИЯ</p>
+          <ul class="space-y-2 text-ash">
+            <li><a href="#catalog" onclick="setCategory('all')" class="hover:text-volt transition">01 / ВЕСЬ АРХИВ (16)</a></li>
+            <li><a href="#catalog" onclick="setCategory('avantgarde')" class="hover:text-volt transition">02 / AVANT-GARDE & HEAVY</a></li>
+            <li><a href="#catalog" onclick="setCategory('skate')" class="hover:text-volt transition">03 / SKATE & STREET</a></li>
+            <li><a href="#catalog" onclick="setCategory('gorpcore')" class="hover:text-volt transition">04 / GORPCORE & TECH</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-4 space-y-3 font-mono text-xs">
+          <p class="text-silver font-bold uppercase">ЛОГИСТИКА И ОПЛАТА</p>
+          <ul class="space-y-2 text-ash">
+            <li>• УКРАИНА: НОВАЯ ПОЧТА (1–2 ДНЯ) / UAH ₴</li>
+            <li>• ЕВРОПА: DHL EXPRESS (2–4 ДНЯ) / EUR €</li>
+            <li>• 100% LEGIT CHECK & ОРИГИНАЛЬНЫЕ БОКСЫ</li>
+            <li>• ПОДДЕРЖКА: TERMINAL@NEILO.STORE</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-ash">
+        <p>© 2026 NEILO ARCHIVE. ALL RIGHTS RESERVED.</p>
+        <p>MULTI-BRAND EDITION // 16 SILHOUETTES</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- МОДАЛЬНОЕ ОКНО ДЕТАЛЬНОГО ПРОСМОТРА МОДЕЛИ -->
+  <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6">
+    <div onclick="closeProductModal()" class="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
+    
+    <div class="relative z-10 bg-panel border border-white/15 w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button 
+        onclick="closeProductModal()" 
+        aria-label="Закрыть"
+        class="absolute top-4 right-4 z-20 w-10 h-10 rounded-xl bg-obsidian/90 border border-white/15 hover:border-volt text-silver hover:text-volt flex items-center justify-center transition"
+      >
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div id="modal-content" class="grid grid-cols-1 lg:grid-cols-12">
+        <!-- Заполняется через JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ВЫДВИЖНАЯ КОРЗИНА-ТЕРМИНАЛ (SLIDE-OVER CART DRAWER) -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+    <div onclick="toggleCart(false)" class="fixed inset-0 bg-black/75 backdrop-blur-sm"></div>
+    
+    <aside class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-panel border-l border-white/15 z-10 flex flex-col shadow-2xl">
+      <!-- Шапка терминала -->
+      <div class="p-6 border-b border-white/10 flex items-center justify-between bg-obsidian/60">
+        <div>
+          <div class="flex items-center gap-2 font-mono text-[10px] text-volt uppercase tracking-widest">
+            <span class="w-1.5 h-1.5 rounded-full bg-volt animate-ping"></span>
+            <span>TERMINAL // ORDER_QUEUE</span>
+          </div>
+          <h2 class="font-display font-bold text-xl text-silver uppercase mt-1">КОРЗИНА</h2>
+        </div>
+        <button 
+          onclick="toggleCart(false)" 
+          aria-label="Закрыть корзину"
+          class="w-10 h-10 rounded-xl bg-panelLight border border-white/10 hover:border-volt text-silver hover:text-volt flex items-center justify-center transition"
+        >
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Список позиций -->
+      <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <!-- Рендерится через JS -->
+      </div>
+
+      <!-- Подвал терминала с расчетами, доставкой и промокодом -->
+      <div id="cart-footer" class="p-6 border-t border-white/10 bg-obsidian/90 space-y-4">
+        
+        <!-- Выбор службы доставки -->
+        <div>
+          <label class="block font-mono text-[10px] text-ash uppercase tracking-wider mb-1.5">СЛУЖБА ДОСТАВКИ</label>
+          <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+            <button 
+              type="button"
+              id="ship-np"
+              onclick="setShippingMethod('np')"
+              class="p-2.5 rounded-xl border border-volt bg-volt/10 text-silver text-left transition"
+            >
+              <div class="font-bold">НОВАЯ ПОЧТА</div>
+              <div class="text-[10px] text-ash" id="ship-np-price">UA // 150 ₴</div>
+            </button>
+            <button 
+              type="button"
+              id="ship-dhl"
+              onclick="setShippingMethod('dhl')"
+              class="p-2.5 rounded-xl border border-white/10 bg-panel text-ash text-left hover:border-white/30 transition"
+            >
+              <div class="font-bold">DHL EUROPE</div>
+              <div class="text-[10px] text-ash" id="ship-dhl-price">EU // €15</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Поле промокода -->
+        <div>
+          <div class="flex gap-2">
+            <input 
+              type="text" 
+              id="promo-input" 
+              placeholder="ПРОМОКОД (NEILO10)" 
+              class="flex-1 bg-panel border border-white/10 focus:border-volt rounded-xl px-3.5 py-2.5 font-mono text-xs text-silver uppercase placeholder-ash/60 outline-none"
+            >
+            <button 
+              type="button"
+              onclick="applyPromoCode()"
+              class="px-4 py-2.5 rounded-xl bg-panelLight hover:bg-volt text-silver hover:text-obsidian border border-white/10 font-mono text-xs font-bold uppercase transition"
+            >
+              OK
+            </button>
+          </div>
+          <p id="promo-status" class="font-mono text-[11px] mt-1.5 hidden"></p>
+        </div>
+
+        <!-- Кибер-чек расчетов -->
+        <div class="p-4 rounded-2xl bg-panel border border-dashed border-white/15 font-mono text-xs space-y-2">
+          <div class="flex justify-between text-ash">
+            <span>СУММА ТОВАРОВ:</span>
+            <span id="summary-subtotal" class="text-silver">0 ₴</span>
+          </div>
+          <div id="discount-row" class="hidden flex justify-between text-volt">
+            <span>СКИДКА (NEILO10 -10%):</span>
+            <span id="summary-discount">-0 ₴</span>
+          </div>
+          <div class="flex justify-between text-ash">
+            <span>ЛОГИСТИКА:</span>
+            <span id="summary-shipping" class="text-silver">0 ₴</span>
+          </div>
+          <div class="pt-2 border-t border-white/10 flex justify-between items-baseline text-sm font-bold">
+            <span class="text-silver">ИТОГО К ОПЛАТЕ:</span>
+            <span id="summary-total" class="text-lg text-volt">0 ₴</span>
+          </div>
+        </div>
+
+        <button 
+          onclick="openCheckoutModal()"
+          class="w-full py-4 rounded-xl bg-volt text-obsidian font-mono text-xs font-bold uppercase tracking-widest hover:brightness-110 transition shadow-[0_0_25px_rgba(212,255,0,0.2)]"
+        >
+          ПЕРЕЙТИ К ОФОРМЛЕНИЮ →
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО ОФОРМЛЕНИЯ И ЦИФРОВОГО ЧЕКА -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div onclick="closeCheckoutModal()" class="fixed inset-0 bg-black/85 backdrop-blur-md"></div>
+    
+    <div class="relative z-10 bg-panel border border-white/15 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button 
+        onclick="closeCheckoutModal()" 
+        class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-obsidian border border-white/10 hover:border-volt text-silver flex items-center justify-center"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Шаг 1: Форма данных -->
+      <div id="checkout-form-view">
+        <div class="font-mono text-[10px] text-volt uppercase tracking-widest">DISPATCH // PROTOCOL</div>
+        <h3 class="font-display font-bold text-2xl text-silver uppercase mt-1">ОФОРМЛЕНИЕ ЗАКАЗА</h3>
+
+        <form onsubmit="processOrder(event)" class="mt-6 space-y-4">
+          <div>
+            <label class="block font-mono text-[11px] text-ash uppercase mb-1.5">ПОЛУЧАТЕЛЬ (ИМЯ И ФАМИЛИЯ) *</label>
+            <input type="text" id="order-name" required placeholder="АЛЕКСАНДР КОВАЛЕНКО" class="w-full bg-obsidian border border-white/10 focus:border-volt rounded-xl px-4 py-3 font-mono text-xs text-silver outline-none">
+          </div>
+
+          <div>
+            <label class="block font-mono text-[11px] text-ash uppercase mb-1.5">КОНТАКТНЫЙ ТЕЛЕФОН / TELEGRAM *</label>
+            <input type="text" id="order-phone" required placeholder="+380 (99) 000-00-00" class="w-full bg-obsidian border border-white/10 focus:border-volt rounded-xl px-4 py-3 font-mono text-xs text-silver outline-none">
+          </div>
+
+          <div>
+            <label class="block font-mono text-[11px] text-ash uppercase mb-1.5">ГОРОД И АДРЕС / ОТДЕЛЕНИЕ *</label>
+            <input type="text" id="order-address" required placeholder="КИЕВ, НОВАЯ ПОЧТА №15 / BERLIN, DHL" class="w-full bg-obsidian border border-white/10 focus:border-volt rounded-xl px-4 py-3 font-mono text-xs text-silver outline-none">
+          </div>
+
+          <div class="p-4 rounded-2xl bg-obsidian border border-white/10 flex items-center justify-between font-mono">
+            <span class="text-xs text-ash">СУММА ТРАНЗАКЦИИ:</span>
+            <span id="checkout-final-amount" class="text-xl font-bold text-volt">0 ₴</span>
+          </div>
+
+          <button type="submit" class="w-full py-4 rounded-xl bg-volt text-obsidian font-mono text-xs font-bold uppercase tracking-widest hover:brightness-110 transition">
+            ПОДТВЕРДИТЬ И СГЕНЕРИРОВАТЬ ЧЕК
+          </button>
+        </form>
+      </div>
+
+      <!-- Шаг 2: Цифровой билет/чек заказа -->
+      <div id="checkout-receipt-view" class="hidden space-y-6">
+        <div class="text-center space-y-2">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-volt text-obsidian font-bold">
+            <i data-lucide="check" class="w-6 h-6"></i>
+          </div>
+          <p class="font-mono text-xs text-volt uppercase tracking-widest">TRANSACTION CONFIRMED</p>
+          <h3 class="font-display font-bold text-2xl text-silver uppercase">ЦИФРОВОЙ БИЛЕТ ЗАКАЗА</h3>
+        </div>
+
+        <!-- Стилизованный кибер-билет -->
+        <div class="relative bg-obsidian border border-volt/40 rounded-2xl p-5 font-mono text-xs space-y-4 overflow-hidden">
+          <div class="flex items-center justify-between border-b border-dashed border-white/15 pb-3">
+            <div>
+              <span class="text-[10px] text-ash block">ORDER_ID</span>
+              <span id="receipt-id" class="text-base font-bold text-volt">#NL-84920</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-ash block">DATE // TIME</span>
+              <span id="receipt-date" class="text-silver">21.11.2026</span>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex justify-between">
+              <span class="text-ash">ПОЛУЧАТЕЛЬ:</span>
+              <span id="receipt-customer" class="text-silver font-bold">---</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-ash">ДОСТАВКА:</span>
+              <span id="receipt-shipping" class="text-silver">---</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-ash">ОПЛАЧЕНО:</span>
+              <span id="receipt-total" class="text-volt font-bold">---</span>
+            </div>
+          </div>
+
+          <!-- Декоративный штрихкод -->
+          <div class="pt-3 border-t border-dashed border-white/15 flex flex-col items-center gap-1.5">
+            <div class="w-full h-8 opacity-80" style="background: repeating-linear-gradient(90deg, #F4F4F6 0px, #F4F4F6 2px, transparent 2px, transparent 5px, #D4FF00 5px, #D4FF00 8px, transparent 8px, transparent 11px);"></div>
+            <span class="text-[10px] tracking-[0.35em] text-ash">NEILO-AUTHENTIC-PASS</span>
+          </div>
+        </div>
+
+        <button onclick="closeCheckoutModal()" class="w-full py-3.5 rounded-xl bg-panelLight hover:bg-volt text-silver hover:text-obsidian border border-white/10 font-mono text-xs font-bold uppercase transition">
+          ВЕРНУТЬСЯ В АРХИВ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ЛОГИКА -->
+  <script>
+    // Курс валют: 1 EUR = 45 UAH
+    const RATE_EUR = 45;
+    let currency = 'UAH'; // 'UAH' | 'EUR'
+    let activeCategory = 'all'; // 'all' | 'avantgarde' | 'skate' | 'gorpcore'
+    let activeBrand = 'ALL';
+    let searchQuery = '';
+    let cart = [];
+    let shippingMethod = 'np'; // 'np' | 'dhl'
+    let promoDiscount = 0;
+    let selectedColorIndex = {}; // Хранит индекс выбранной расцветки для каждой модели
+
+    // Каталог из 16 культовых моделей с уникальными силуэтами и палитрами
+    const products = [
+      {
+        id: 1,
+        sku: 'NL-001',
+        name: 'DRKSHDW Ramones Low',
+        brand: 'RICK OWENS',
+        category: 'avantgarde',
+        silhouette: 'ramones',
+        badge: 'ICON',
+        priceUAH: 23400,
+        material: '16oz Waxed Canvas',
+        soleHeight: '42mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / Milk', upper: '#16161A', toe: '#EDEAE2', sole: '#EAE6DC', accent: '#D4FF00', metal: '#C4C4CC' },
+          { name: 'Triple Black', upper: '#111114', toe: '#1E1E24', sole: '#16161B', accent: '#D4FF00', metal: '#787882' },
+          { name: 'Dark Dust / Milk', upper: '#4A4642', toe: '#EDEAE2', sole: '#EAE6DC', accent: '#D4FF00', metal: '#C4C4CC' }
+        ],
+        description: 'Культовый низкий силуэт Рика Оуэнса из плотного вощеного канваса с удлиненным архитектурным язычком, массивным контрастным мыском и зубчатой подошвой Shark Tooth.'
+      },
+      {
+        id: 2,
+        sku: 'NL-002',
+        name: 'Geobasket High',
+        brand: 'RICK OWENS',
+        category: 'avantgarde',
+        silhouette: 'geobasket',
+        badge: 'ARCHIVE',
+        priceUAH: 34200,
+        material: 'Full-Grain Calf Leather',
+        soleHeight: '45mm',
+        fit: 'Oversized Tongue',
+        sizes: [41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / Milk', upper: '#141418', toe: '#EFECE6', sole: '#EBE7DE', accent: '#EFECE6', metal: '#D4D4DC' },
+          { name: 'Pearl / Milk', upper: '#A6A29A', toe: '#EFECE6', sole: '#EBE7DE', accent: '#141418', metal: '#D4D4DC' }
+        ],
+        description: 'Флагманские высокие хайтопы из премиальной телячьей кожи с гипертрофированным язычком, боковой молнией YKK и фирменной геометрической аппликацией.'
+      },
+      {
+        id: 3,
+        sku: 'NL-003',
+        name: 'M-TANK106-C2 Reactor',
+        brand: 'NEW ROCK',
+        category: 'avantgarde',
+        silhouette: 'newrock',
+        badge: 'HEAVY METAL',
+        priceUAH: 13500,
+        material: 'Cowhide Leather / Steel',
+        soleHeight: '65mm',
+        fit: 'Wide / Chunky',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Obsidian Chrome', upper: '#121216', toe: '#1A1A20', sole: '#0B0B0E', accent: '#D4FF00', metal: '#D8DCE3' },
+          { name: 'Stealth Matte', upper: '#18181C', toe: '#18181C', sole: '#0E0E12', accent: '#8A8A93', metal: '#52525B' }
+        ],
+        description: 'Испанские индустриальные ботинки ручной сборки на массивной тракторной платформе Reactor 6.5 см с литыми металлическими пластинами и пряжками.'
+      },
+      {
+        id: 4,
+        sku: 'NL-004',
+        name: 'M-WALL106-S1 Tower',
+        brand: 'NEW ROCK',
+        category: 'avantgarde',
+        silhouette: 'newrock',
+        badge: 'PLATFORM',
+        priceUAH: 12600,
+        material: 'Natural Leather / TPU',
+        soleHeight: '60mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44],
+        colorways: [
+          { name: 'Black / Silver', upper: '#141418', toe: '#1D1D24', sole: '#101014', accent: '#D4FF00', metal: '#E2E8F0' },
+          { name: 'Volt Stitch', upper: '#141418', toe: '#1D1D24', sole: '#101014', accent: '#D4FF00', metal: '#D4FF00' }
+        ],
+        description: 'Низкий брутальный силуэт New Rock с анатомической поддержкой, стальными вставками в протекторе и фирменной гравировкой на пятке.'
+      },
+      {
+        id: 5,
+        sku: 'NL-005',
+        name: '3XL Distressed Mesh',
+        brand: 'BALENCIAGA',
+        category: 'avantgarde',
+        silhouette: 'balenciaga',
+        badge: 'RUNWAY',
+        priceUAH: 38250,
+        material: 'Technical Mesh / TPU',
+        soleHeight: '52mm',
+        fit: 'Oversized Fit',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Eggshell / Black', upper: '#C8C5BC', toe: '#222228', sole: '#DCD9D0', accent: '#18181C', metal: '#8A8A93' },
+          { name: 'Triple Black', upper: '#16161B', toe: '#23232A', sole: '#101014', accent: '#D4FF00', metal: '#52525B' }
+        ],
+        description: 'Гипертрофированная многослойная архитектура из состаренной технической сетки с вынесенным задником, рефлективными вставками и дополнительной шнуровкой на мыске.'
+      },
+      {
+        id: 6,
+        sku: 'NL-006',
+        name: 'Jadon 8-Eye Platform',
+        brand: 'DR. MARTENS',
+        category: 'avantgarde',
+        silhouette: 'drmartens',
+        badge: 'QUAD SOLE',
+        priceUAH: 9900,
+        material: 'Polished Smooth Leather',
+        soleHeight: '50mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / Yellow Welt', upper: '#141418', toe: '#1C1C22', sole: '#1A1A1E', accent: '#FACC15', metal: '#94A3B8' },
+          { name: 'Cherry Arcadia', upper: '#5C1622', toe: '#450F18', sole: '#1A1A1E', accent: '#FACC15', metal: '#94A3B8' }
+        ],
+        description: 'Эволюция классических 1460 на двойной платформе Quad с фирменной желтой прошивкой Goodyear Welt, боковой молнией и воздушной подушкой AirWair™.'
+      },
+      {
+        id: 7,
+        sku: 'NL-007',
+        name: 'Knu Skool Puff',
+        brand: 'VANS',
+        category: 'skate',
+        silhouette: 'vans',
+        badge: 'Y2K SKATE',
+        priceUAH: 4950,
+        material: 'Heavy Suede / Canvas',
+        soleHeight: '32mm',
+        fit: 'Padded / Wide',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / True White', upper: '#151519', toe: '#1D1D22', sole: '#F4F4F6', accent: '#F4F4F6', metal: '#D4FF00' },
+          { name: 'Navy / White', upper: '#1B2845', toe: '#223357', sole: '#F4F4F6', accent: '#F4F4F6', metal: '#D4FF00' },
+          { name: 'Volt / Black', upper: '#151519', toe: '#1D1D22', sole: '#151519', accent: '#D4FF00', metal: '#D4FF00' }
+        ],
+        description: 'Объемный скейт-силуэт прямиком из конца 90-х с гипертрофированным дутым язычком, широкими шнурками Fat Laces и выпуклой 3D-волной Sidestripe.'
+      },
+      {
+        id: 8,
+        sku: 'NL-008',
+        name: 'Old Skool 36 DX Anaheim',
+        brand: 'VANS',
+        category: 'skate',
+        silhouette: 'vans',
+        badge: 'CORE',
+        priceUAH: 4275,
+        material: '10oz Duck Canvas / Suede',
+        soleHeight: '28mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / Marshmallow', upper: '#17171C', toe: '#1F1F26', sole: '#EFECE4', accent: '#EFECE4', metal: '#A1A1AA' },
+          { name: 'Racing Red / Black', upper: '#991B1B', toe: '#17171C', sole: '#EFECE4', accent: '#EFECE4', metal: '#A1A1AA' }
+        ],
+        description: 'Трибьют первой фабрике Vans в Анахайме: плотный 10-унцовый канвас, глянцевая высокая лента подошвы и стелька Ortholite®.'
+      },
+      {
+        id: 9,
+        sku: 'NL-009',
+        name: 'Chuck 70 Hi Black',
+        brand: 'CONVERSE',
+        category: 'skate',
+        silhouette: 'converse',
+        badge: 'ESSENTIAL',
+        priceUAH: 4500,
+        material: '12oz Organic Canvas',
+        soleHeight: '34mm',
+        fit: 'Half Size Down',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / Egret', upper: '#16161A', toe: '#EDE9DF', sole: '#EDE9DF', accent: '#16161A', metal: '#D4D4D8' },
+          { name: 'Parchment / Egret', upper: '#E5DFD2', toe: '#EDE9DF', sole: '#EDE9DF', accent: '#16161A', metal: '#D4D4D8' }
+        ],
+        description: 'Архивная версия 1970-х с плотным хлопком 12 унций, лакированной резиновой лентой цвета слоновой кости, прострочкой крылатого язычка и стелькой OrthoLite.'
+      },
+      {
+        id: 10,
+        sku: 'NL-010',
+        name: 'Chuck 70 De Luxe Heel',
+        brand: 'CONVERSE',
+        category: 'skate',
+        silhouette: 'converse',
+        badge: 'NEW DROP',
+        priceUAH: 5850,
+        material: 'Heavy Twill / Lug Sole',
+        soleHeight: '55mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44],
+        colorways: [
+          { name: 'Obsidian / Egret', upper: '#141418', toe: '#EDE9DF', sole: '#141418', accent: '#D4FF00', metal: '#E4E4E7' },
+          { name: 'Triple Black', upper: '#121215', toe: '#1D1D22', sole: '#121215', accent: '#D4FF00', metal: '#71717A' }
+        ],
+        description: 'Смелое переосмысление классических кед с агрессивным тракторным протектором и массивным архитектурным блочным каблуком.'
+      },
+      {
+        id: 11,
+        sku: 'NL-011',
+        name: 'Campus 00s Core Black',
+        brand: 'ADIDAS',
+        category: 'skate',
+        silhouette: 'adidas',
+        badge: 'BESTSELLER',
+        priceUAH: 5400,
+        material: 'Premium Suede / Gum',
+        soleHeight: '32mm',
+        fit: 'Padded / True',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Core Black / Cloud White', upper: '#151519', toe: '#1B1B20', sole: '#EAE6DF', accent: '#F4F4F6', metal: '#D4FF00' },
+          { name: 'Grey Three / Gum', upper: '#52525B', toe: '#5E5E68', sole: '#9A6B42', accent: '#F4F4F6', metal: '#D4FF00' }
+        ],
+        description: 'Массивные скейт-кроссовки в духе нулевых с широкими тремя полосками, пухлым язычком с логотипом Trefoil и мягкой замшей.'
+      },
+      {
+        id: 12,
+        sku: 'NL-012',
+        name: 'Replica GAT Paint Splatter',
+        brand: 'MARGIELA',
+        category: 'skate',
+        silhouette: 'margiela',
+        badge: 'ARTISANAL',
+        priceUAH: 25650,
+        material: 'Calfskin / Lambskin Lining',
+        soleHeight: '26mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44],
+        colorways: [
+          { name: 'White / Volt & Neon Splatter', upper: '#E6E4DD', toe: '#C9C5BA', sole: '#8E623E', accent: '#D4FF00', metal: '#18181B' },
+          { name: 'Black / Multi Splatter', upper: '#18181C', toe: '#26262E', sole: '#6E492B', accent: '#D4FF00', metal: '#F4F4F6' }
+        ],
+        description: 'Легендарные German Army Trainers от Maison Margiela с ручной росписью брызгами краски, подкладкой из мягкой кожи ягненка и фирменным белым стежком на пятке.'
+      },
+      {
+        id: 13,
+        sku: 'NL-013',
+        name: 'XT-6 Gore-Tex',
+        brand: 'SALOMON',
+        category: 'gorpcore',
+        silhouette: 'salomon',
+        badge: 'GORE-TEX',
+        priceUAH: 10350,
+        material: 'Gore-Tex ePE / SensiFit™',
+        soleHeight: '36mm',
+        fit: 'Narrow / Snug',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Black / Silver / Volt', upper: '#141418', toe: '#23232B', sole: '#0E0E12', accent: '#D4FF00', metal: '#CBD5E1' },
+          { name: 'Lunar Rock / Phantom', upper: '#787882', toe: '#25252C', sole: '#16161B', accent: '#38BDF8', metal: '#E2E8F0' }
+        ],
+        description: 'Икона функционального горпкора с мембраной Gore-Tex нового поколения, системой быстрой шнуровки Quicklace™ и шасси Agile Chassis™.'
+      },
+      {
+        id: 14,
+        sku: 'NL-014',
+        name: 'Gel-Kayano 14 Metallic',
+        brand: 'ASICS',
+        category: 'gorpcore',
+        silhouette: 'asics',
+        badge: 'TECH RUN',
+        priceUAH: 7650,
+        material: 'Open Mesh / Chrome TPU',
+        soleHeight: '35mm',
+        fit: 'True to Size',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Cream / Black / Plum', upper: '#DDD9CE', toe: '#222228', sole: '#EAE6DC', accent: '#D4FF00', metal: '#94A3B8' },
+          { name: 'Obsidian / Pure Silver', upper: '#17171D', toe: '#262630', sole: '#121216', accent: '#D4FF00', metal: '#E2E8F0' }
+        ],
+        description: 'Технологичная беговая классика 2008 года с многослойными хромированными накладками, гелевыми капсулами GEL™ и системой поддержки TRUSSTIC™.'
+      },
+      {
+        id: 15,
+        sku: 'NL-015',
+        name: 'Air Max Plus TN Triple Black',
+        brand: 'NIKE',
+        category: 'gorpcore',
+        silhouette: 'niketn',
+        badge: 'TUNED AIR',
+        priceUAH: 8550,
+        material: 'Synthetic Cage / Tuned Air',
+        soleHeight: '38mm',
+        fit: 'Snug Fit',
+        sizes: [40, 41, 42, 43, 44, 45],
+        colorways: [
+          { name: 'Triple Black / Volt Air', upper: '#131317', toe: '#1D1D24', sole: '#0C0C0F', accent: '#D4FF00', metal: '#52525B' },
+          { name: 'Hyper Blue / Black', upper: '#1D4ED8', toe: '#131317', sole: '#0C0C0F', accent: '#FACC15', metal: '#93C5FD' }
+        ],
+        description: 'Агрессивный уличный силуэт с волнообразным экзоскелетом из термополиуретана, супинатором в форме китового хвоста и капсулами Tuned Air.'
+      },
+      {
+        id: 16,
+        sku: 'NL-016',
+        name: 'Factory Team Chop Saw',
+        brand: 'OAKLEY',
+        category: 'gorpcore',
+        silhouette: 'oakley',
+        badge: 'BRAIN DEAD',
+        priceUAH: 9450,
+        material: 'Neoprene / Nubuck / Lug',
+        soleHeight: '46mm',
+        fit: 'Slip-On Tech',
+        sizes: [40, 41, 42, 43, 44],
+        colorways: [
+          { name: 'Ostrich Black / Volt', upper: '#19191F', toe: '#26262E', sole: '#0D0D10', accent: '#D4FF00', metal: '#A1A1AA' },
+          { name: 'Sand / Moss Tech', upper: '#7C7362', toe: '#383B32', sole: '#18181C', accent: '#D4FF00', metal: '#D4D4D8' }
+        ],
+        description: 'Архивный футуристичный гибрид начала 2000-х от лаборатории Oakley Factory Team без шнурков с эластичным неопреновым воротом и пилообразной подошвой.'
+      }
+    ];
+
+    // Конфигурация хотспотов для 3 переключаемых моделей на Hero-подиуме
+    const podiumConfigs = {
+      1: {
+        badge: 'AVANT-GARDE ICON',
+        hs: [
+          ['01 // HEAVY CANVAS 16OZ', 'Плотный вощеный органический хлопок с повышенной износостойкостью.'],
+          ['02 // EXTENDED TONGUE', 'Удлиненный архитектурный язычок и массивные люверсы из палладия.'],
+          ['03 // SHARK TOOTH SOLE', 'Фирменная зубчатая подошва из вулканизированного каучука цвета Milk.']
+        ]
+      },
+      3: {
+        badge: 'INDUSTRIAL METAL',
+        hs: [
+          ['01 // COWHIDE LEATHER', 'Натуральная плотная кожа с индустриальной прошивкой и ремнями.'],
+          ['02 // STEEL HARDWARE', 'Литые металлические пряжки и защитные пластины в пяточной зоне.'],
+          ['03 // REACTOR 65MM SOLE', 'Массивная тракторная платформа с интегрированными стальными вставками.']
+        ]
+      },
+      7: {
+        badge: 'Y2K PUFF SKATE',
+        hs: [
+          ['01 // HEAVY SUEDE', 'Износостойкая замша с усиленной зоной олли для катания и улицы.'],
+          ['02 // MEGA PUFF TONGUE', 'Гипертрофированный дутый язычок и широкие шнурки Fat Laces.'],
+          ['03 // 3D SIDESTRIPE', 'Объемная выпуклая волна и классическая вафельная подметка Waffle.']
+        ]
+      }
+    };
+
+    // Генератор уникальных детальных SVG-иллюстраций под каждый силуэт
+    function renderSneakerSVG(item, colorIdx = 0, isHero = false) {
+      const c = item.colorways[colorIdx] || item.colorways[0];
+      const uid = `${item.id}-${colorIdx}-${isHero ? 'hero' : 'card'}`;
+
+      // 1. RICK OWENS RAMONES LOW (контрастный мыс, высокий язычок, зубчатая подошва)
+      if (item.silhouette === 'ramones') {
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.75)]" fill="none">
+            <!-- Зубчатая подошва Shark Tooth -->
+            <path d="M36 168 L322 168 L328 184 L314 192 L302 184 L290 192 L278 184 L266 192 L254 184 L242 192 L230 184 L218 192 L206 184 L194 192 L182 184 L170 192 L158 184 L146 192 L134 184 L122 192 L110 184 L98 192 L86 184 L74 192 L62 184 L50 192 L34 182 Z" fill="${c.sole}" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="38" y1="175" x2="324" y2="175" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+            <!-- Высокий удлиненный язычок -->
+            <path d="M135 92 L156 32 C164 26 178 28 183 38 L196 98 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+            <!-- Основной корпус кеда -->
+            <path d="M40 168 L44 102 C56 96 76 112 104 112 C126 112 142 84 166 78 L236 118 C275 124 316 134 324 168 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+            <!-- Контрастный округлый мыс (Toe Cap) -->
+            <path d="M242 122 C282 126 318 136 324 168 L236 168 C234 148 236 132 242 122 Z" fill="${c.toe}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+            <!-- Контрастная строчка -->
+            <path d="M48 162 L232 162 M112 118 C134 134 150 150 156 162" stroke="rgba(255,255,255,0.32)" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <!-- Люверсы и плоские шнурки -->
+            ${[0,1,2,3,4].map(i => `
+              <circle cx="${168 + i*14}" cy="${86 + i*8}" r="3.2" fill="${c.metal}"/>
+              <path d="M${166 + i*14} ${86 + i*8} L${178 + i*14} ${79 + i*8}" stroke="${c.toe}" stroke-width="3" stroke-linecap="round"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 2. RICK OWENS GEOBASKET HIGH
+      if (item.silhouette === 'geobasket') {
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.75)]" fill="none">
+            <!-- Массивная подошва -->
+            <path d="M38 172 L322 172 L326 192 L36 192 Z" rx="6" fill="${c.sole}"/>
+            <path d="M42 184 L320 184" stroke="rgba(0,0,0,0.25)" stroke-width="2" stroke-dasharray="6 4"/>
+            <!-- Гипертрофированный язычок -->
+            <path d="M124 72 L144 16 C158 12 176 16 182 28 L194 86 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.18)" stroke-width="1.2"/>
+            <!-- Высокий голеностоп -->
+            <path d="M44 172 L46 58 L128 62 L188 96 L246 126 C286 130 318 142 322 172 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+            <!-- Геометрическая боковая полоса -->
+            <path d="M88 158 L142 104 L164 114 L122 162 L212 150 L216 164 Z" fill="${c.toe}"/>
+            <!-- Перфорированный мыс -->
+            <path d="M244 126 C284 130 318 142 322 172 L240 172 Z" fill="${c.toe}"/>
+            <!-- Шнуровка -->
+            ${[0,1,2,3,4,5].map(i => `
+              <rect x="${152 + i*13}" y="${74 + i*8}" width="14" height="3.5" rx="1.5" transform="rotate(-18 ${152 + i*13} ${74 + i*8})" fill="${c.toe}"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 3. NEW ROCK REACTOR / TOWER (тракторная платформа 65мм + металлические пластины)
+      if (item.silhouette === 'newrock') {
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_20px_28px_rgba(0,0,0,0.85)]" fill="none">
+            <!-- Агрессивная тракторная подошва Reactor -->
+            <path d="M32 152 L326 152 L332 176 L320 198 L302 198 L296 184 L282 184 L276 198 L254 198 L248 184 L224 184 L218 198 L194 198 L188 184 L152 184 L144 198 L112 198 L106 184 L82 184 L74 198 L36 198 L28 176 Z" fill="${c.sole}" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+            <!-- Металлические вставки в подошве -->
+            <rect x="64" y="162" width="38" height="12" rx="3" fill="${c.metal}"/>
+            <rect x="165" y="162" width="44" height="12" rx="3" fill="${c.metal}"/>
+            <rect x="266" y="162" width="36" height="12" rx="3" fill="${c.metal}"/>
+            <!-- Кожаный корпус ботинка -->
+            <path d="M36 152 L42 74 C64 70 86 84 114 84 C138 84 154 62 174 62 L238 106 C282 110 322 122 326 152 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.18)" stroke-width="1.3"/>
+            <!-- Металлическая накладка на пятку и носок -->
+            <path d="M36 152 L39 114 C56 116 68 132 70 152 Z" fill="${c.metal}"/>
+            <path d="M276 115 C304 120 322 132 326 152 L274 152 Z" fill="${c.metal}" opacity="0.85"/>
+            <!-- 3 массивные пряжки с металлическими кольцами -->
+            ${[0,1,2].map(i => `
+              <rect x="${156 + i*22}" y="${76 + i*12}" width="26" height="9" rx="2" transform="rotate(14 ${156 + i*22} ${76 + i*12})" fill="#26262E" stroke="${c.metal}" stroke-width="1.5"/>
+              <circle cx="${178 + i*22}" cy="${84 + i*12}" r="4.5" stroke="${c.accent}" stroke-width="1.5"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 4. BALENCIAGA 3XL (многослойная архитектура, вынесенный задник, шнурок на мыске)
+      if (item.silhouette === 'balenciaga') {
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.8)]" fill="none">
+            <!-- Вынесенный скульптурный задник и многослойная подошва -->
+            <path d="M18 164 L44 154 L328 158 L338 176 L306 188 L196 184 L152 188 L34 186 Z" fill="${c.sole}" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+            <path d="M24 174 L332 172" stroke="${c.accent}" stroke-width="2" stroke-dasharray="14 6"/>
+            <!-- Многослойный верх из сетки и TPU -->
+            <path d="M44 156 L54 96 C78 94 98 106 122 104 C144 102 158 74 180 74 L244 114 C284 118 320 130 328 158 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.18)" stroke-width="1.2"/>
+            <!-- Экзоскелетные панели -->
+            <path d="M74 154 L106 112 L138 154 M142 154 L176 98 L214 154 M218 154 L248 118 L286 156" stroke="${c.toe}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Фирменный шнурок на передней части мыска -->
+            <path d="M276 126 C294 120 314 134 306 148 C298 158 274 146 276 126 Z" stroke="${c.accent}" stroke-width="2.2"/>
+            <!-- Шнуровка -->
+            ${[0,1,2,3].map(i => `
+              <line x1="${172 + i*15}" y1="${82 + i*8}" x2="${188 + i*15}" y2="${74 + i*8}" stroke="${c.accent}" stroke-width="3.2" stroke-linecap="round"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 5. DR. MARTENS JADON (желтая строчка, высокая платформа Quad)
+      if (item.silhouette === 'drmartens') {
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.8)]" fill="none">
+            <!-- Платформа Quad -->
+            <path d="M38 158 L322 158 L326 192 L212 192 L202 182 L152 182 L142 192 L38 192 Z" fill="${c.sole}" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <!-- Фирменная желтая строчка Goodyear Welt -->
+            <line x1="40" y1="162" x2="320" y2="162" stroke="${c.accent}" stroke-width="2.5" stroke-dasharray="5 3"/>
+            <!-- Высокий силуэт 8-Eye -->
+            <path d="M44 158 L48 48 L136 52 L192 98 L252 118 C292 122 318 134 322 158 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+            <!-- Петля AirWair сзади -->
+            <path d="M48 48 L36 32 L52 30 L58 48 Z" fill="#111114" stroke="${c.accent}" stroke-width="1"/>
+            <!-- Люверсы -->
+            ${[0,1,2,3,4,5].map(i => `
+              <circle cx="${146 + i*12}" cy="${62 + i*9}" r="3" fill="${c.metal}"/>
+              <line x1="${144 + i*12}" y1="${62 + i*9}" x2="${158 + i*12}" y2="${56 + i*9}" stroke="#1F1F26" stroke-width="2.5"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 6. VANS KNU SKOOL / OLD SKOOL (дутый силуэт, волна Sidestripe, вафельная подошва)
+      if (item.silhouette === 'vans') {
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.75)]" fill="none">
+            <!-- Высокая вулканизированная подошва -->
+            <path d="M36 156 L324 156 L322 182 L38 182 Z" fill="${c.sole}" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+            <line x1="37" y1="162" x2="323" y2="162" stroke="#18181B" stroke-width="2"/>
+            <!-- Дутый язычок Knu Skool -->
+            <path d="M138 98 C144 62 174 58 188 76 L204 108 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+            <!-- Замшевый корпус -->
+            <path d="M38 156 L44 96 C68 94 92 108 118 108 C142 108 156 84 176 84 L244 118 C286 122 320 132 324 156 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+            <!-- Фирменная волна Sidestripe -->
+            <path d="M56 122 C108 120 144 142 228 148 L226 155 C140 152 104 132 54 132 Z" fill="${c.accent}"/>
+            <!-- Широкие шнурки Fat Laces -->
+            ${[0,1,2,3].map(i => `
+              <rect x="${168 + i*16}" y="${86 + i*8}" width="18" height="6" rx="2.5" transform="rotate(-22 ${168 + i*16} ${86 + i*8})" fill="${c.accent}" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 7. CONVERSE CHUCK 70 / DE LUXE HEEL
+      if (item.silhouette === 'converse') {
+        const isHeel = item.id === 10;
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.75)]" fill="none">
+            <!-- Подошва Chuck 70 или блочный каблук De Luxe -->
+            ${isHeel
+              ? `<path d="M40 156 L322 156 L326 178 L212 178 L198 168 L136 168 L124 196 L42 196 Z" fill="${c.sole}" stroke="rgba(255,255,255,0.18)" stroke-width="1.2"/>`
+              : `<path d="M38 160 L322 160 L320 184 L40 184 Z" fill="${c.sole}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+                 <line x1="39" y1="167" x2="321" y2="167" stroke="#18181B" stroke-width="2"/>`
+            }
+            <!-- Высокий верх из канваса -->
+            <path d="M44 160 L48 44 L132 48 L192 104 L252 126 C292 130 318 140 322 160 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+            <!-- Резиновый мыс (Toe Cap) -->
+            <path d="M254 126 C292 130 318 140 322 160 L248 160 C248 144 250 134 254 126 Z" fill="${c.toe}"/>
+            <!-- Круглый патч All Star на щиколотке -->
+            <circle cx="88" cy="84" r="16" fill="${c.toe}" stroke="${c.accent}" stroke-width="1.5"/>
+            <polygon points="88,74 91,81 98,81 92,86 94,93 88,89 82,93 84,86 78,81 85,81" fill="${c.accent}"/>
+            <!-- Металлические люверсы -->
+            ${[0,1,2,3,4,5].map(i => `
+              <circle cx="${142 + i*13}" cy="${58 + i*10}" r="3.2" fill="${c.metal}"/>
+            `).join('')}
+          </svg>`;
+      }
+
+      // 8. ADIDAS CAMPUS 00S / MAISON MARGIELA GAT
+      if (item.silhouette === 'adidas' || item.silhouette === 'margiela') {
+        const isMargiela = item.silhouette === 'margiela';
+        return `
+          <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.75)]" fill="none">
+            <!-- Подошва -->
+            <path d="M38 158 L322 158 L320 182 L40 182 Z" fill="${c.sole}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+            <!-- Корпус -->
+            <path d="M40 158 L46 98 C70 96 94 110 120 110 C144 110 158 84 178 84 L244 120 C286 124 318 134 322 158 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+            <!-- Замшевый Т-образный мыс -->
+            <path d="M242 120 C286 124 318 134 322 158 L228 158 C230 140 235 128 242 120 Z" fill="${c.toe}"/>
+            ${isMargiela
+              ? `<!-- Брызги краски Artisanal Splatter -->
+                 <circle cx="110" cy="134" r="5" fill="${c.accent}"/>
+                 <circle cx="145" cy="144" r="7" fill="#38BDF8"/>
+                 <circle cx="188" cy="132" r="4.5" fill="${c.accent}"/>
+                 <circle cx="235" cy="146" r="6" fill="#F43F5E"/>
+                 <circle cx="278" cy="142" r="5" fill="${c.accent}"/>
+                 <path d="M95 148 Q125 122 155 146" stroke="${c.accent}" stroke-width="3" stroke-linecap="round"/>`
+              : `<!-- Широкие три полоски Campus 00s -->
+                 <polygon points="122,158 144,108 158,111 136,158" fill="${c.accent}"/>
+                 <polygon points="148,158 170,104 184,107 162,158" fill="${c.accent}"/>
+                 <polygon points="174,158 196,100 210,103 188,158" fill="${c.accent}"/>`
+            }
+          </svg>`;
+      }
+
+      // 9. SALOMON XT-6 / ASICS KAYANO / NIKE TN / OAKLEY (Gorpcore & Tech)
+      return `
+        <svg viewBox="0 0 360 220" class="w-full h-full drop-shadow-[0_18px_24px_rgba(0,0,0,0.8)]" fill="none">
+          <!-- Агрессивная беговая/трейловая подошва -->
+          <path d="M32 156 L326 156 L330 176 L312 186 L286 182 L262 186 L236 182 L212 186 L186 182 L156 186 L126 182 L96 186 L66 182 L36 186 Z" fill="${c.sole}" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+          <!-- Амортизационные вставки (GEL / Tuned Air / Chassis) -->
+          <rect x="62" y="162" width="44" height="10" rx="5" fill="${c.accent}"/>
+          <rect x="248" y="164" width="38" height="8" rx="4" fill="${c.accent}"/>
+          <!-- Аэродинамический корпус -->
+          <path d="M36 156 L46 94 C72 92 94 106 120 106 C146 106 162 76 184 76 L248 114 C288 118 320 130 326 156 Z" fill="${c.upper}" stroke="rgba(255,255,255,0.18)" stroke-width="1.2"/>
+          <!-- Технический каркас SensiFit / TPU Cage -->
+          <path d="M76 154 L108 106 L132 154 M136 154 L168 92 L196 154 M202 154 L232 112 L268 154" stroke="${c.metal}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Защитный бампер мыска -->
+          <path d="M276 122 C304 128 322 138 326 156 L274 156 Z" fill="${c.toe}"/>
+          <!-- Система быстрой шнуровки Quicklace -->
+          <path d="M168 78 L232 112" stroke="${c.accent}" stroke-width="2.2" stroke-dasharray="4 3"/>
+          <circle cx="164" cy="74" r="5" fill="${c.accent}"/>
+        </svg>`;
+    }
+
+    // Управление 3D-подиумом в Hero
+    let currentPodiumId = 1;
+    function switchPodiumItem(productId) {
+      const item = products.find(p => p.id === productId);
+      const cfg = podiumConfigs[productId];
+      if (!item || !cfg) return;
+
+      currentPodiumId = productId;
+      document.getElementById('podium-sku').innerHTML = `<span class="w-2 h-2 rounded-full bg-volt"></span> MODEL_ID: #${item.sku} // ${item.brand}`;
+      document.getElementById('podium-badge').textContent = cfg.badge;
+      document.getElementById('podium-name').textContent = item.name.toUpperCase();
+      document.getElementById('podium-price').setAttribute('data-price-uah', item.priceUAH);
+      document.getElementById('podium-price').textContent = formatMoney(item.priceUAH);
+      document.getElementById('podium-cta').setAttribute('onclick', `openProductModal(${item.id})`);
+      document.getElementById('podium-svg-stage').innerHTML = renderSneakerSVG(item, 0, true);
+
+      cfg.hs.forEach((h, idx) => {
+        document.getElementById(`hs-title-${idx}`).textContent = h[0];
+        document.getElementById(`hs-desc-${idx}`).textContent = h[1];
+      });
+
+      document.querySelectorAll('.podium-tab').forEach((btn, idx) => {
+        const ids = [1, 3, 7];
+        if (ids[idx] === productId) {
+          btn.className = 'podium-tab px-2 py-0.5 rounded bg-volt text-obsidian font-bold text-[10px]';
+        } else {
+          btn.className = 'podium-tab px-2 py-0.5 rounded bg-obsidian border border-white/10 text-ash hover:text-silver text-[10px]';
+        }
+      });
+    }
+
+    // Рендер чипсов брендов с подсчетом количества моделей
+    function renderBrandChips() {
+      const bar = document.getElementById('brand-chips-bar');
+      if (!bar) return;
+
+      const brandCounts = products.reduce((acc, p) => {
+        acc[p.brand] = (acc[p.brand] || 0) + 1;
+        return acc;
+      }, {});
+
+      const brandsList = ['ALL', ...Object.keys(brandCounts)];
+
+      bar.innerHTML = brandsList.map(brand => {
+        const count = brand === 'ALL' ? products.length : brandCounts[brand];
+        const isActive = activeBrand === brand;
+        return `
+          <button
+            onclick="setBrand('${brand}')"
+            data-cursor="FILTER"
+            class="px-3 py-1.5 rounded-xl font-mono text-[11px] font-bold uppercase border transition-all ${
+              isActive
+                ? 'bg-volt text-obsidian border-volt shadow-[0_0_18px_rgba(212,255,0,0.25)]'
+                : 'bg-panel text-ash hover:text-silver border-white/10 hover:border-white/30'
+            }"
+          >
+            ${brand} <span class="opacity-70">[${count < 10 ? '0' + count : count}]</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function setBrand(brand) {
+      activeBrand = brand;
+      renderBrandChips();
+      renderCatalog();
+    }
+
+    // Смена расцветки прямо в карточке каталога
+    function selectCardColor(productId, colorIdx, event) {
+      if (event) event.stopPropagation();
+      selectedColorIndex[productId] = colorIdx;
+      const item = products.find(p => p.id === productId);
+      if (!item) return;
+
+      const svgContainer = document.getElementById(`card-svg-${productId}`);
+      const colorLabel = document.getElementById(`card-color-name-${productId}`);
+      if (svgContainer) svgContainer.innerHTML = renderSneakerSVG(item, colorIdx);
+      if (colorLabel) colorLabel.textContent = item.colorways[colorIdx].name;
+
+      document.querySelectorAll(`.swatch-${productId}`).forEach((btn, idx) => {
+        btn.classList.toggle('ring-2', idx === colorIdx);
+        btn.classList.toggle('ring-volt', idx === colorIdx);
+      });
+    }
+
+    // Инициализация кинетического заголовка Hero
+    function initHeroTitle() {
+      const titleEl = document.getElementById('hero-title');
+      const lines = ['АРХИВ', 'КУЛЬТОВЫХ', 'СИЛУЭТОВ', 'УЛИЦЫ'];
+      let charIndex = 0;
+
+      titleEl.innerHTML = lines.map((line, lineIdx) => {
+        const chars = line.split('').map(ch => {
+          const delay = (charIndex * 0.032).toFixed(3);
+          charIndex++;
+          const accentClass = lineIdx === 1 ? 'text-volt' : 'text-silver';
+          return `<span class="reveal-char ${accentClass}" style="animation-delay:${delay}s">${ch}</span>`;
+        }).join('');
+        return `<span class="block overflow-hidden pb-1">${chars}</span>`;
+      }).join('');
+    }
+
+    // Форматирование цены в текущей валюте
+    function formatMoney(uahAmount) {
+      if (currency === 'UAH') {
+        return Math.round(uahAmount).toLocaleString('ru-RU') + ' ₴';
+      }
+      const eurAmount = Math.round(uahAmount / RATE_EUR);
+      return '€' + eurAmount.toLocaleString('en-US');
+    }
+
+    // Эффект «перещелкивания» цифр при смене валюты
+    function animatePriceElements() {
+      document.querySelectorAll('[data-price-uah]').forEach(el => {
+        const targetUAH = Number(el.getAttribute('data-price-uah'));
+        const targetNum = currency === 'UAH' ? targetUAH : Math.round(targetUAH / RATE_EUR);
+        const startNum = Math.round(targetNum * 0.65);
+        const duration = 320;
+        const startTime = performance.now();
+
+        function step(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(startNum + (targetNum - startNum) * eased);
+          el.textContent = currency === 'UAH'
+            ? current.toLocaleString('ru-RU') + ' ₴'
+            : '€' + current.toLocaleString('en-US');
+
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          }
+        }
+        requestAnimationFrame(step);
+      });
+    }
+
+    // Переключение валют UAH <-> EUR
+    function setCurrency(nextCurrency) {
+      if (currency === nextCurrency) return;
+      currency = nextCurrency;
+
+      const pill = document.getElementById('currency-pill');
+      const btnUah = document.getElementById('btn-uah');
+      const btnEur = document.getElementById('btn-eur');
+
+      if (currency === 'UAH') {
+        pill.style.transform = 'translateX(0%)';
+        btnUah.classList.replace('text-ash', 'text-obsidian');
+        btnEur.classList.replace('text-obsidian', 'text-ash');
+        setShippingMethod('np', true);
+      } else {
+        pill.style.transform = 'translateX(100%)';
+        btnEur.classList.replace('text-ash', 'text-obsidian');
+        btnUah.classList.replace('text-obsidian', 'text-ash');
+        setShippingMethod('dhl', true);
+      }
+
+      document.getElementById('ship-np-price').textContent = `UA // ${formatMoney(150)}`;
+      document.getElementById('ship-dhl-price').textContent = `EU // ${formatMoney(675)}`;
+
+      renderCatalog();
+      animatePriceElements();
+      renderCart();
+
+      if (activeModalProductId) {
+        openProductModal(activeModalProductId, true);
+      }
+    }
+
+    // Управление плавающей подложкой фильтров (Sliding Pill)
+    function moveFilterPill(btnEl) {
+      const pill = document.getElementById('filter-pill');
+      if (!pill || !btnEl) return;
+      pill.style.width = `${btnEl.offsetWidth}px`;
+      pill.style.transform = `translateX(${btnEl.offsetLeft - 4}px)`;
+    }
+
+    function setCategory(cat, btnEl = null) {
+      activeCategory = cat;
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.classList.remove('text-ash');
+          btn.classList.add('text-obsidian');
+          if (!btnEl) btnEl = btn;
+        } else {
+          btn.classList.remove('text-obsidian');
+          btn.classList.add('text-ash');
+        }
+      });
+      if (btnEl) moveFilterPill(btnEl);
+      renderCatalog();
+    }
+
+    function resetAllFilters() {
+      searchQuery = '';
+      activeBrand = 'ALL';
+      document.getElementById('search-input').value = '';
+      document.getElementById('mobile-search-input').value = '';
+      document.getElementById('sort-select').value = 'featured';
+      renderBrandChips();
+      setCategory('all');
+    }
+
+    // Рендер асимметричной Bento-сетки каталога
+    function renderCatalog() {
+      const grid = document.getElementById('products-grid');
+      const emptyState = document.getElementById('empty-state');
+      const sortBy = document.getElementById('sort-select').value;
+
+      let list = products.filter(p => {
+        const matchCat = activeCategory === 'all' || p.category === activeCategory;
+        const matchBrand = activeBrand === 'ALL' || p.brand === activeBrand;
+        const q = searchQuery.trim().toLowerCase();
+        const matchQuery = !q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+        return matchCat && matchBrand && matchQuery;
+      });
+
+      if (sortBy === 'price-asc') list.sort((a, b) => a.priceUAH - b.priceUAH);
+      if (sortBy === 'price-desc') list.sort((a, b) => b.priceUAH - a.priceUAH);
+      if (sortBy === 'sole-desc') list.sort((a, b) => parseInt(b.soleHeight) - parseInt(a.soleHeight));
+
+      document.getElementById('catalog-counter').textContent = `НАЙДЕНО МОДЕЛЕЙ: ${list.length < 10 ? '0' + list.length : list.length}`;
+
+      if (list.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      grid.innerHTML = list.map((item, index) => {
+        const cIdx = selectedColorIndex[item.id] || 0;
+        const activeColor = item.colorways[cIdx];
+        const isWide = activeCategory === 'all' && activeBrand === 'ALL' && !searchQuery && (index === 0 || index === 1);
+        const colSpanClass = isWide ? 'lg:col-span-6' : 'lg:col-span-4';
+
+        return `
+          <article 
+            onmousemove="handleCardTilt(event, this)" 
+            onmouseleave="resetCardTilt(this)"
+            class="bento-card card-animate ${colSpanClass} rounded-3xl p-5 flex flex-col justify-between group overflow-hidden"
+            style="animation-delay: ${Math.min(index * 0.04, 0.4)}s"
+          >
+            <div>
+              <!-- Верхняя строка карточки: Бренд, SKU и Бейдж -->
+              <div class="flex items-center justify-between font-mono text-[11px] mb-3">
+                <span class="text-silver font-bold tracking-wider">${item.brand} <span class="text-ash font-normal">// ${item.sku}</span></span>
+                ${item.badge ? `<span class="px-2.5 py-0.5 rounded bg-volt/15 border border-volt/40 text-volt font-bold">${item.badge}</span>` : ''}
+              </div>
+
+              <!-- Сцена с детальной SVG-иллюстрацией силуэта -->
+              <div 
+                onclick="openProductModal(${item.id})"
+                data-cursor="VIEW"
+                class="relative ${isWide ? 'aspect-[16/9]' : 'aspect-[4/3]'} rounded-2xl bg-obsidian border border-white/5 overflow-hidden flex items-center justify-center p-4"
+              >
+                <div class="absolute w-36 h-36 rounded-full bg-volt/5 blur-2xl group-hover:bg-volt/15 transition-colors"></div>
+                <div id="card-svg-${item.id}" class="w-full h-full flex items-center justify-center group-hover:scale-105 group-hover:-rotate-2 transition-transform duration-500 ease-out">
+                  ${renderSneakerSVG(item, cIdx)}
+                </div>
+
+                <!-- Всплывающая панель тех-характеристик при наведении -->
+                <div class="absolute inset-x-3 bottom-3 p-2.5 rounded-xl bg-obsidian/90 backdrop-blur-md border border-white/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 font-mono text-[10px] grid grid-cols-3 gap-2">
+                  <div>
+                    <span class="text-ash block">ПОДОШВА</span>
+                    <span class="text-volt font-bold">${item.soleHeight}</span>
+                  </div>
+                  <div>
+                    <span class="text-ash block">ПОСАДКА</span>
+                    <span class="text-silver font-bold truncate block">${item.fit}</span>
+                  </div>
+                  <div>
+                    <span class="text-ash block">МАТЕРИАЛ</span>
+                    <span class="text-silver font-bold truncate block">${item.material.split('/')[0]}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Переключатель расцветок -->
+              <div class="flex items-center justify-between mt-3.5 font-mono text-[10px]">
+                <span id="card-color-name-${item.id}" class="text-ash uppercase truncate">${activeColor.name}</span>
+                <div class="flex items-center gap-1.5">
+                  ${item.colorways.map((cw, idx) => `
+                    <button
+                      type="button"
+                      onclick="selectCardColor(${item.id}, ${idx}, event)"
+                      title="${cw.name}"
+                      class="swatch-${item.id} w-4 h-4 rounded-full border border-white/30 transition ${idx === cIdx ? 'ring-2 ring-volt' : 'opacity-75 hover:opacity-100'}"
+                      style="background: linear-gradient(135deg, ${cw.upper} 50%, ${cw.sole} 50%);"
+                    ></button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Нижняя часть: Название, Цена и Быстрый выбор размера EU -->
+            <div class="mt-4 space-y-4">
+              <div class="flex items-start justify-between gap-3">
+                <h3 
+                  onclick="openProductModal(${item.id})"
+                  data-cursor="VIEW"
+                  class="font-display font-bold text-base sm:text-lg text-silver group-hover:text-volt transition-colors leading-snug"
+                >
+                  ${item.name}
+                </h3>
+                <span class="font-mono font-bold text-base sm:text-lg text-volt shrink-0" data-price-uah="${item.priceUAH}">
+                  ${formatMoney(item.priceUAH)}
+                </span>
+              </div>
+
+              <div class="pt-3 border-t border-white/10">
+                <div class="flex items-center justify-between font-mono text-[10px] text-ash mb-2">
+                  <span>РАЗМЕР (EU):</span>
+                  <button onclick="openProductModal(${item.id})" class="text-silver hover:text-volt underline">ДЕТАЛИ</button>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${item.sizes.map(sz => `
+                    <button 
+                      onclick="quickAddToCart(${item.id}, ${sz})"
+                      data-cursor="ADD"
+                      class="px-2.5 py-1 rounded-lg bg-obsidian hover:bg-volt border border-white/10 hover:border-volt font-mono text-xs font-semibold text-silver hover:text-obsidian transition-colors"
+                    >
+                      ${sz}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+    function openProductModal(id, keepState = false) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+
+      activeModalProductId = id;
+      if (!keepState) modalSelectedSize = item.sizes[2] || item.sizes[0];
+      const cIdx = selectedColorIndex[item.id] || 0;
+      const activeColor = item.colorways[cIdx];
+
+      const container = document.getElementById('modal-content');
+      container.innerHTML = `
+        <div class="lg:col-span-6 bg-obsidian p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10">
+          <div class="flex items-center justify-between font-mono text-xs text-ash">
+            <span>${item.sku} // ${item.brand}</span>
+            <span class="text-volt">AUTHENTIC VERIFIED</span>
+          </div>
+          <div class="my-6 aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-panel p-6 flex items-center justify-center">
+            ${renderSneakerSVG(item, cIdx, true)}
+          </div>
+          <div class="grid grid-cols-3 gap-2 font-mono text-xs">
+            <div class="p-3 rounded-xl bg-panel border border-white/10">
+              <span class="text-[10px] text-ash block">ПЛАТФОРМА</span>
+              <span class="text-volt font-bold">${item.soleHeight}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-panel border border-white/10">
+              <span class="text-[10px] text-ash block">ПОСАДКА</span>
+              <span class="text-silver font-bold truncate block">${item.fit}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-panel border border-white/10">
+              <span class="text-[10px] text-ash block">МАТЕРИАЛ</span>
+              <span class="text-silver font-bold truncate block">${item.material}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-5">
+          <div class="space-y-4">
+            <div>
+              <span class="font-mono text-xs text-volt uppercase tracking-widest">${item.brand} // ${item.category.toUpperCase()}</span>
+              <h2 class="font-display font-bold text-2xl sm:text-3xl text-silver uppercase mt-1">${item.name}</h2>
+              <p class="font-mono font-bold text-2xl text-volt mt-2">${formatMoney(item.priceUAH)}</p>
+            </div>
+
+            <p class="text-sm text-ash leading-relaxed">${item.description}</p>
+
+            <!-- Выбор расцветки в модальном окне -->
+            <div>
+              <div class="font-mono text-xs text-ash uppercase mb-2">
+                РАСЦВЕТКА: <span class="text-silver font-bold">${activeColor.name}</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                ${item.colorways.map((cw, idx) => `
+                  <button
+                    type="button"
+                    onclick="selectModalColor(${item.id}, ${idx})"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-xl border font-mono text-xs transition ${idx === cIdx ? 'border-volt bg-volt/10 text-silver' : 'border-white/10 bg-obsidian text-ash hover:border-white/30'}"
+                  >
+                    <span class="w-3.5 h-3.5 rounded-full border border-white/30" style="background: linear-gradient(135deg, ${cw.upper} 50%, ${cw.sole} 50%);"></span>
+                    <span>${cw.name}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Выбор размера EU -->
+            <div>
+              <div class="flex items-center justify-between font-mono text-xs mb-2">
+                <span class="text-silver uppercase">ВЫБЕРИТЕ РАЗМЕР (EU):</span>
+                <span class="text-volt">В НАЛИЧИИ</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                ${item.sizes.map(sz => `
+                  <button 
+                    type="button"
+                    onclick="selectModalSize(${sz})"
+                    class="modal-size-btn py-2.5 rounded-xl font-mono text-xs font-bold border transition ${modalSelectedSize === sz ? 'bg-volt text-obsidian border-volt' : 'bg-obsidian text-silver border-white/10 hover:border-volt'}"
+                    data-size="${sz}"
+                  >
+                    EU ${sz}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <button 
+            onclick="addModalItemToCart(${item.id})"
+            class="w-full py-4 rounded-xl bg-volt text-obsidian font-mono text-xs font-bold uppercase tracking-widest hover:brightness-110 transition shadow-[0_0_25px_rgba(212,255,0,0.25)]"
+          >
+            ДОБАВИТЬ В КОРЗИНУ — ${formatMoney(item.priceUAH)}
+          </button>
+        </div>
+      `;
+
+      const modal = document.getElementById('product-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function selectModalColor(productId, colorIdx) {
+      selectedColorIndex[productId] = colorIdx;
+      renderCatalog();
+      openProductModal(productId, true);
+    }
+    // Добавление в корзину с учетом выбранной расцветки и размера
+    function quickAddToCart(productId, size) {
+      const item = products.find(p => p.id === productId);
+      if (!item) return;
+
+      const cIdx = selectedColorIndex[productId] || 0;
+      const colorName = item.colorways[cIdx].name;
+
+      const existing = cart.find(c => c.id === productId && c.size === size && c.colorIdx === cIdx);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: item.id,
+          sku: item.sku,
+          brand: item.brand,
+          name: item.name,
+          priceUAH: item.priceUAH,
+          colorIdx: cIdx,
+          colorName: colorName,
+          size: size,
+          qty: 1
+        });
+      }
+
+      renderCart();
+      showToast(`[+] ${item.brand} ${item.name} (${colorName} / EU ${size})`);
+    }
+
+    // Интерактивный 3D-параллакс подиума в Hero
+    const podium = document.getElementById('hero-podium');
+    if (podium) {
+      podium.addEventListener('mousemove', (e) => {
+        const rect = podium.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        podium.style.transform = `perspective(1100px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+      });
+      podium.addEventListener('mouseleave', () => {
+        podium.style.transform = 'perspective(1100px) rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    // Управление хотспотами на 3D-подиуме
+    function showHotspot(index) {
+      [0, 1, 2].forEach(i => {
+        const card = document.getElementById(`hotspot-card-${i}`);
+        if (card) {
+          if (i === index) card.classList.remove('hidden');
+          else card.classList.add('hidden');
+        }
+      });
+    }
+
+    function toggleHotspot(index) {
+      const card = document.getElementById(`hotspot-card-${index}`);
+      if (card) card.classList.toggle('hidden');
+    }
+
+    // Модальное окно детального просмотра
+    let activeModalProductId = null;
+    let modalSelectedSize = null;
+
+    function selectModalSize(size) {
+      modalSelectedSize = size;
+      document.querySelectorAll('.modal-size-btn').forEach(btn => {
+        if (Number(btn.dataset.size) === size) {
+          btn.className = 'modal-size-btn py-3 rounded-xl font-mono text-xs font-bold border transition bg-volt text-obsidian border-volt';
+        } else {
+          btn.className = 'modal-size-btn py-3 rounded-xl font-mono text-xs font-bold border transition bg-obsidian text-silver border-white/10 hover:border-volt';
+        }
+      });
+    }
+
+    function closeProductModal() {
+      const modal = document.getElementById('product-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      activeModalProductId = null;
+    }
+
+    // Добавление в корзину (быстрое и из модального окна)
+    function quickAddToCart(productId, size) {
+      const item = products.find(p => p.id === productId);
+      if (!item) return;
+
+      const existing = cart.find(c => c.id === productId && c.size === size);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: item.id,
+          sku: item.sku,
+          name: item.name,
+          priceUAH: item.priceUAH,
+          image: item.image,
+          size: size,
+          qty: 1
+        });
+      }
+
+      renderCart();
+      showToast(`[+] ${item.name} (EU ${size}) ДОБАВЛЕН В ТЕРМИНАЛ`);
+    }
+
+    function addModalItemToCart(productId) {
+      if (!modalSelectedSize) return;
+      quickAddToCart(productId, modalSelectedSize);
+      closeProductModal();
+    }
+
+    // Управление корзиной-терминалом
+    function toggleCart(open) {
+      const drawer = document.getElementById('cart-drawer');
+      if (open) {
+        drawer.classList.remove('hidden');
+        renderCart();
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    function changeCartQty(idx, delta) {
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      renderCart();
+    }
+
+    function setShippingMethod(method, silent = false) {
+      shippingMethod = method;
+      const npBtn = document.getElementById('ship-np');
+      const dhlBtn = document.getElementById('ship-dhl');
+
+      if (method === 'np') {
+        npBtn.className = 'p-2.5 rounded-xl border border-volt bg-volt/10 text-silver text-left transition';
+        dhlBtn.className = 'p-2.5 rounded-xl border border-white/10 bg-panel text-ash text-left hover:border-white/30 transition';
+      } else {
+        dhlBtn.className = 'p-2.5 rounded-xl border border-volt bg-volt/10 text-silver text-left transition';
+        npBtn.className = 'p-2.5 rounded-xl border border-white/10 bg-panel text-ash text-left hover:border-white/30 transition';
+      }
+
+      if (!silent) renderCart();
+    }
+
+    function applyPromoCode() {
+      const input = document.getElementById('promo-input').value.trim().toUpperCase();
+      const status = document.getElementById('promo-status');
+      status.classList.remove('hidden');
+
+      if (input === 'NEILO10') {
+        promoDiscount = 0.10;
+        status.textContent = '✓ ПРОМОКОД NEILO10 АКТИВИРОВАН (-10%)';
+        status.className = 'font-mono text-[11px] mt-1.5 text-volt';
+      } else {
+        promoDiscount = 0;
+        status.textContent = '✕ НЕВЕРНЫЙ КОД (ПОПРОБУЙТЕ NEILO10)';
+        status.className = 'font-mono text-[11px] mt-1.5 text-red-400';
+      }
+      renderCart();
+    }
+
+    function calculateTotalsUAH() {
+      const subtotal = cart.reduce((sum, item) => sum + item.priceUAH * item.qty, 0);
+      const discount = Math.round(subtotal * promoDiscount);
+      const shipping = subtotal === 0 ? 0 : (shippingMethod === 'np' ? 150 : 675);
+      const total = Math.max(0, subtotal - discount + shipping);
+      return { subtotal, discount, shipping, total };
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      const footer = document.getElementById('cart-footer');
+      const badge = document.getElementById('cart-badge');
+
+      const count = cart.reduce((sum, i) => sum + i.qty, 0);
+      badge.textContent = count;
+
+      if (cart.length === 0) {
+        footer.classList.add('hidden');
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-16 space-y-4">
+            <div class="w-14 h-14 rounded-2xl bg-obsidian border border-white/10 flex items-center justify-center text-ash">
+              <i data-lucide="terminal" class="w-6 h-6"></i>
+            </div>
+            <div class="font-mono">
+              <p class="text-sm font-bold text-silver uppercase">ОЧЕРЕДЬ ЗАКАЗА ПУСТА</p>
+              <p class="text-xs text-ash mt-1">Выберите пару из архива NEILO.</p>
+            </div>
+            <button onclick="toggleCart(false)" class="px-5 py-2.5 rounded-xl bg-volt text-obsidian font-mono text-xs font-bold uppercase">
+              В КАТАЛОГ
+            </button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      footer.classList.remove('hidden');
+      const totals = calculateTotalsUAH();
+
+      document.getElementById('summary-subtotal').textContent = formatMoney(totals.subtotal);
+      document.getElementById('summary-shipping').textContent = formatMoney(totals.shipping);
+      document.getElementById('summary-total').textContent = formatMoney(totals.total);
+
+      const discountRow = document.getElementById('discount-row');
+      if (totals.discount > 0) {
+        discountRow.classList.remove('hidden');
+        document.getElementById('summary-discount').textContent = '-' + formatMoney(totals.discount);
+      } else {
+        discountRow.classList.add('hidden');
+      }
+
+      container.innerHTML = cart.map((item, idx) => `
+        <div class="flex gap-4 p-3.5 rounded-2xl bg-obsidian border border-white/10">
+          <img 
+            src="${item.image}" 
+            alt="${item.name}"
+            onerror="this.onerror=null;this.src='https://placehold.co/150x150/111115/D4FF00?text=NEILO';"
+            class="w-20 h-20 rounded-xl object-cover bg-panel shrink-0"
+          >
+          <div class="flex-1 min-w-0 font-mono">
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="font-sans font-bold text-sm text-silver truncate">${item.name}</h4>
+              <button onclick="changeCartQty(${idx}, -${item.qty})" class="text-ash hover:text-volt text-xs">✕</button>
+            </div>
+            <p class="text-[11px] text-ash mt-0.5">${item.sku} // SIZE: EU ${item.size}</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="inline-flex items-center bg-panel border border-white/10 rounded-lg">
+                <button onclick="changeCartQty(${idx}, -1)" class="w-7 h-7 text-xs font-bold text-silver hover:text-volt">−</button>
+                <span class="px-2 text-xs font-bold text-silver">${item.qty}</span>
+                <button onclick="changeCartQty(${idx}, 1)" class="w-7 h-7 text-xs font-bold text-silver hover:text-volt">+</button>
+              </div>
+              <span class="text-xs font-bold text-volt">${formatMoney(item.priceUAH * item.qty)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // Оформление заказа и генерация цифрового чека
+    function openCheckoutModal() {
+      toggleCart(false);
+      const totals = calculateTotalsUAH();
+      document.getElementById('checkout-final-amount').textContent = formatMoney(totals.total);
+      document.getElementById('checkout-form-view').classList.remove('hidden');
+      document.getElementById('checkout-receipt-view').classList.add('hidden');
+
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCheckoutModal() {
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function processOrder(e) {
+      e.preventDefault();
+      const name = document.getElementById('order-name').value.trim();
+      const totals = calculateTotalsUAH();
+      const orderNum = '#NL-' + Math.floor(10000 + Math.random() * 90000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('ru-RU') + ' // ' + now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById('receipt-id').textContent = orderNum;
+      document.getElementById('receipt-date').textContent = dateStr;
+      document.getElementById('receipt-customer').textContent = name.toUpperCase();
+      document.getElementById('receipt-shipping').textContent = shippingMethod === 'np' ? 'НОВАЯ ПОЧТА (UA)' : 'DHL EXPRESS (EU)';
+      document.getElementById('receipt-total').textContent = formatMoney(totals.total);
+
+      cart = [];
+      promoDiscount = 0;
+      document.getElementById('promo-input').value = '';
+      document.getElementById('promo-status').classList.add('hidden');
+      renderCart();
+
+      document.getElementById('checkout-form-view').classList.add('hidden');
+      document.getElementById('checkout-receipt-view').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // Всплывающие тех-уведомления
+    function showToast(text) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'bg-obsidian/95 backdrop-blur-md border border-volt/50 text-silver font-mono text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 translate-y-3 opacity-0';
+      toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-volt shrink-0"></span><span>${text}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => toast.classList.remove('translate-y-3', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-3');
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    // Поиск и мобильный поиск
+    function toggleMobileSearch() {
+      document.getElementById('mobile-search-bar').classList.toggle('hidden');
+    }
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCatalog();
+    });
+
+    document.getElementById('mobile-search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCatalog();
+    });
+
+    // Кастомный магнитный курсор-прицел
+    function initCustomCursor() {
+      const cursor = document.getElementById('custom-cursor');
+      const label = document.getElementById('custom-cursor-label');
+      if (!cursor) return;
+
+      let mouseX = -100, mouseY = -100;
+      let cursorX = -100, cursorY = -100;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        const target = e.target.closest('[data-cursor]');
+        if (target) {
+          cursor.classList.add('cursor-active');
+          label.textContent = target.getAttribute('data-cursor');
+        } else {
+          cursor.classList.remove('cursor-active');
+        }
+      });
+
+      function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.22;
+        cursorY += (mouseY - cursorY) * 0.22;
+        cursor.style.left = `${cursorX}px`;
+        cursor.style.top = `${cursorY}px`;
+        requestAnimationFrame(animateCursor);
+      }
+      requestAnimationFrame(animateCursor);
+    }
+
+    // Закрытие модалок по Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeProductModal();
+        closeCheckoutModal();
+        toggleCart(false);
+      }
+    });
+
+    // Старт приложения
+    window.addEventListener('DOMContentLoaded', () => {
+      initHeroTitle();
+      initCustomCursor();
+      switchPodiumItem(1);
+      renderBrandChips();
+      renderCatalog();
+      renderCart();
+      lucide.createIcons();
+
+      // Позиционирование плавающей подложки первого фильтра
+      const firstFilterBtn = document.querySelector('.filter-btn[data-cat="all"]');
+      setTimeout(() => moveFilterPill(firstFilterBtn), 50);
+      window.addEventListener('resize', () => {
+        const activeBtn = document.querySelector(`.filter-btn[data-cat="${activeCategory}"]`);
+        moveFilterPill(activeBtn);
+      });
+    });
+  </script>
+</body>
+</html>
